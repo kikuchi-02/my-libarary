@@ -1,0 +1,30 @@
+version: "3.5"
+
+services:
+  backend:
+    build: ./backend
+    image: my-library_backend
+    container_name: my-library_backend
+    # tty: true
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      PYTHONUNBUFFERED: 1
+      DJANGO_SETTINGS_MODULE: config.settings.local
+    volumes:
+      - ./backend:/main:cached
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  db:
+    image: postgres:12-alpine
+    container_name: my-library_db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./db/pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
